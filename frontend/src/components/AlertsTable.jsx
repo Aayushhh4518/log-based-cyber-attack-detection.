@@ -1,5 +1,4 @@
 import React from 'react';
-import { recentAlerts } from '../data/demoData';
 import { ShieldAlert, AlertTriangle, AlertCircle, Info } from 'lucide-react';
 
 const SeverityBadge = ({ severity }) => {
@@ -25,7 +24,7 @@ const SeverityBadge = ({ severity }) => {
   );
 };
 
-const AlertsTable = ({ onRowClick }) => {
+const AlertsTable = ({ alerts = [], onRowClick }) => {
   return (
     <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
       <div className="p-6 border-b border-slate-700 flex justify-between items-center">
@@ -46,7 +45,7 @@ const AlertsTable = ({ onRowClick }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700/50 text-sm">
-            {recentAlerts.map((alert) => (
+            {alerts.map((alert) => (
               <tr 
                 key={alert.id} 
                 className="hover:bg-slate-700/30 transition-colors cursor-pointer text-slate-300"

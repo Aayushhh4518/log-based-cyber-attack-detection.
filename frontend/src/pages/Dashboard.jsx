@@ -4,7 +4,7 @@ import ThreatActivityChart from '../components/ThreatActivityChart';
 import DetectionBreakdown from '../components/DetectionBreakdown';
 import AlertsTable from '../components/AlertsTable';
 import AlertDetails from '../components/AlertDetails';
-import { summaryStats } from '../data/demoData';
+import { summaryStats, recentAlerts } from '../data/demoData';
 import { Activity, ShieldAlert, AlertTriangle, AlertOctagon } from 'lucide-react';
 
 const Dashboard = () => {
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
       {/* Alerts Table */}
       <div>
-        <AlertsTable onRowClick={handleRowClick} />
+        <AlertsTable alerts={recentAlerts} onRowClick={handleRowClick} />
       </div>
 
       {/* Details Modal */}
