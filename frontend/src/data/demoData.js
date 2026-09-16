@@ -1,3 +1,8 @@
+/** 
+ * DEMONSTRATION DATA 
+ * Note: These static objects are for the frontend-only stage of the project.
+ * They will be replaced by API calls to the FastAPI backend in the next phase.
+ */
 export const summaryStats = {
   totalEvents: "12,486",
   securityAlerts: "37",

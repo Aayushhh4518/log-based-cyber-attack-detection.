@@ -13,7 +13,7 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'dashboard': return <Dashboard />;
+      case 'dashboard': return <Dashboard setCurrentPage={setCurrentPage} />;
       case 'security-alerts': return <SecurityAlerts />;
       case 'log-explorer': return <LogExplorer />;
       case 'detection-rules': return <DetectionRules />;

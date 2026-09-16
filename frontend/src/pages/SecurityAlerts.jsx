@@ -11,6 +11,13 @@ const SecurityAlerts = () => {
   const [typeFilter, setTypeFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
 
+  const clearFilters = () => {
+    setSearch('');
+    setSeverityFilter('All');
+    setTypeFilter('All');
+    setStatusFilter('All');
+  };
+
   const filteredAlerts = recentAlerts.filter(alert => {
     const matchesSearch = alert.user.toLowerCase().includes(search.toLowerCase()) || 
                           alert.sourceIp.includes(search) ||
@@ -78,6 +85,13 @@ const SecurityAlerts = () => {
             <option value="Resolved">Resolved</option>
             <option value="Closed">Closed</option>
           </select>
+
+          <button 
+            onClick={clearFilters}
+            className="text-sm text-slate-400 hover:text-slate-200 px-2 py-1"
+          >
+            Clear Filters
+          </button>
         </div>
       </div>
 

@@ -24,12 +24,19 @@ const SeverityBadge = ({ severity }) => {
   );
 };
 
-const AlertsTable = ({ alerts = [], onRowClick }) => {
+const AlertsTable = ({ alerts = [], onRowClick, onViewAllClick }) => {
   return (
     <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
       <div className="p-6 border-b border-slate-700 flex justify-between items-center">
         <h3 className="text-lg font-semibold text-slate-100">Recent Security Alerts</h3>
-        <button className="text-sm text-blue-400 hover:text-blue-300 font-medium">View All</button>
+        {onViewAllClick && (
+          <button 
+            onClick={onViewAllClick}
+            className="text-sm text-blue-400 hover:text-blue-300 font-medium"
+          >
+            View All
+          </button>
+        )}
       </div>
       
       <div className="overflow-x-auto">
@@ -69,6 +76,17 @@ const AlertsTable = ({ alerts = [], onRowClick }) => {
                 </td>
               </tr>
             ))}
+            {alerts.length === 0 && (
+              <tr>
+                <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
+                  <div className="flex flex-col items-center gap-2">
+                    <ShieldAlert className="w-8 h-8 text-slate-600 mb-1" />
+                    <p className="font-medium text-slate-400">No security alerts found</p>
+                    <p className="text-xs">Adjust your search or filter criteria to see results.</p>
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

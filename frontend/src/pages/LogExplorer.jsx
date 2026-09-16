@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { mockLogs } from '../data/demoData';
 import { Search, Filter, X } from 'lucide-react';
 
@@ -7,6 +7,14 @@ const LogExplorer = () => {
   const [typeFilter, setTypeFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
   const [selectedLog, setSelectedLog] = useState(null);
+
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape' && selectedLog) setSelectedLog(null);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [selectedLog]);
 
   const filteredLogs = mockLogs.filter(log => {
     const matchesSearch = log.message.toLowerCase().includes(search.toLowerCase()) || 
@@ -137,8 +145,14 @@ const LogExplorer = () => {
 
       {/* Log Details Modal */}
       {selectedLog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+          onClick={() => setSelectedLog(null)}
+        >
+          <div 
+            className="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
               <h3 className="font-bold text-slate-100 flex items-center gap-2">
                 Log Details <span className="text-slate-500 font-mono text-sm">#{selectedLog.id}</span>

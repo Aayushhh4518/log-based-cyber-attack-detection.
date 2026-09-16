@@ -7,7 +7,7 @@ import AlertDetails from '../components/AlertDetails';
 import { summaryStats, recentAlerts } from '../data/demoData';
 import { Activity, ShieldAlert, AlertTriangle, AlertOctagon } from 'lucide-react';
 
-const Dashboard = () => {
+const Dashboard = ({ setCurrentPage }) => {
   const [selectedAlert, setSelectedAlert] = useState(null);
 
   const handleRowClick = (alert) => {
@@ -60,7 +60,11 @@ const Dashboard = () => {
 
       {/* Alerts Table */}
       <div>
-        <AlertsTable alerts={recentAlerts} onRowClick={handleRowClick} />
+        <AlertsTable 
+          alerts={recentAlerts} 
+          onRowClick={handleRowClick} 
+          onViewAllClick={() => setCurrentPage('security-alerts')}
+        />
       </div>
 
       {/* Details Modal */}

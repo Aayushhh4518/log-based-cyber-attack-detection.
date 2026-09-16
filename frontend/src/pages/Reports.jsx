@@ -13,7 +13,10 @@ const Reports = () => {
           <h2 className="text-xl font-bold text-slate-100">Security Analysis Report</h2>
           <p className="text-slate-400 mt-1 text-sm">Summary of system activity and detected anomalies for the current period.</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md font-medium text-sm transition-colors shadow-sm">
+        <button 
+          onClick={() => window.print()}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md font-medium text-sm transition-colors shadow-sm"
+        >
           <Download className="w-4 h-4" /> Export Report
         </button>
       </div>

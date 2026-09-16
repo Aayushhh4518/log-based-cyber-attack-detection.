@@ -16,7 +16,7 @@ const Header = () => {
       <div className="flex items-center gap-6 text-sm">
         <div className="text-right">
           <div className="text-slate-400">{currentDate}</div>
-          <div className="font-medium text-slate-200">System Status: <span className="text-blue-400 ml-1">Monitoring active</span></div>
+          <div className="font-medium text-slate-200">System Status: <span className="text-blue-400 ml-1">Demo Mode</span></div>
         </div>
       </div>
     </header>
