@@ -4,11 +4,14 @@ import ThreatActivityChart from '../components/ThreatActivityChart';
 import DetectionBreakdown from '../components/DetectionBreakdown';
 import AlertsTable from '../components/AlertsTable';
 import AlertDetails from '../components/AlertDetails';
-import { summaryStats, recentAlerts } from '../data/demoData';
-import { Activity, ShieldAlert, AlertTriangle, AlertOctagon } from 'lucide-react';
+import { Activity, ShieldAlert, AlertTriangle, AlertOctagon, Play, RotateCcw, Loader2 } from 'lucide-react';
+import { useDemo } from '../context/DemoContext';
 
 const Dashboard = ({ setCurrentPage }) => {
   const [selectedAlert, setSelectedAlert] = useState(null);
+  
+  // Connect to DemoContext
+  const { summaryStats, alerts, isAnalyzing, runDemoAnalysis, resetDemo, demoState } = useDemo();
 
   const handleRowClick = (alert) => {
     setSelectedAlert(alert);
@@ -20,6 +23,47 @@ const Dashboard = ({ setCurrentPage }) => {
 
   return (
     <div className="space-y-6">
+      
+      {/* Demo Controls */}
+      <div className="flex flex-col sm:flex-row justify-between items-center bg-slate-800 p-4 rounded-lg border border-slate-700 shadow-sm gap-4">
+        <div>
+          <h2 className="text-lg font-bold text-slate-100">Security Overview</h2>
+          <p className="text-sm text-slate-400">
+            {demoState === 'initial' ? "System ready for analysis." : "Displaying analysis results."}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          {demoState === 'complete' && (
+            <button 
+              onClick={resetDemo}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-md transition-colors text-sm font-medium border border-slate-600"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Reset Demo
+            </button>
+          )}
+          <button 
+            onClick={runDemoAnalysis}
+            disabled={isAnalyzing || demoState === 'complete'}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors text-sm font-medium ${
+              isAnalyzing 
+                ? 'bg-blue-600/50 text-blue-200 cursor-not-allowed' 
+                : demoState === 'complete'
+                  ? 'bg-green-600/50 text-green-200 cursor-not-allowed border border-green-600/50'
+                  : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20'
+            }`}
+          >
+            {isAnalyzing ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing...</>
+            ) : demoState === 'complete' ? (
+              <>Analysis Complete</>
+            ) : (
+              <><Play className="w-4 h-4" /> Run Security Analysis</>
+            )}
+          </button>
+        </div>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
@@ -61,7 +105,7 @@ const Dashboard = ({ setCurrentPage }) => {
       {/* Alerts Table */}
       <div>
         <AlertsTable 
-          alerts={recentAlerts} 
+          alerts={alerts} 
           onRowClick={handleRowClick} 
           onViewAllClick={() => setCurrentPage('security-alerts')}
         />

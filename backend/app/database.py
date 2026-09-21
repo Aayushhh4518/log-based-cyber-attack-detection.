@@ -148,3 +148,48 @@ def get_rules():
         return [dict(row) for row in cursor.fetchall()]
     finally:
         conn.close()
+
+def insert_log_events(events: list) -> int:
+    """Inserts a list of normalized log events, avoiding exact duplicates."""
+    if not events:
+        return 0
+        
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        
+        # Get existing events to deduplicate (using timestamp, host, message as unique signature)
+        cursor.execute("SELECT timestamp, host, message FROM log_events")
+        existing = set((row['timestamp'], row['host'], row['message']) for row in cursor.fetchall())
+        
+        inserted_count = 0
+        for e in events:
+            sig = (e['timestamp'], e['host'], e['message'])
+            if sig not in existing:
+                cursor.execute("""
+                    INSERT INTO log_events 
+                    (timestamp, host, username, source_ip, event_type, status, message, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    e['timestamp'], e['host'], e['username'], e['source_ip'],
+                    e['event_type'], e['status'], e['message'], e['created_at']
+                ))
+                existing.add(sig)
+                inserted_count += 1
+                
+        conn.commit()
+        return inserted_count
+    finally:
+        conn.close()
+
+def get_log_events(page: int = 1, page_size: int = 50):
+    """Retrieve paginated log events."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        offset = (page - 1) * page_size
+        cursor.execute("SELECT * FROM log_events ORDER BY id ASC LIMIT ? OFFSET ?", (page_size, offset))
+        return [dict(row) for row in cursor.fetchall()]
+    finally:
+        conn.close()
+

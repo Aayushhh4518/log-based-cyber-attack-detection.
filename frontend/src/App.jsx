@@ -7,6 +7,7 @@ import LogExplorer from './pages/LogExplorer';
 import DetectionRules from './pages/DetectionRules';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import { DemoProvider } from './context/DemoContext';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -24,17 +25,19 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-950 overflow-hidden font-sans text-slate-200">
-      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-          <div className="max-w-7xl mx-auto">
-            {renderPage()}
-          </div>
-        </main>
+    <DemoProvider>
+      <div className="flex h-screen bg-slate-950 overflow-hidden font-sans text-slate-200">
+        <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          <Header />
+          <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+            <div className="max-w-7xl mx-auto">
+              {renderPage()}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </DemoProvider>
   );
 }
 

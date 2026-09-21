@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { mockLogs } from '../data/demoData';
+import { useDemo } from '../context/DemoContext';
 import { Search, Filter, X } from 'lucide-react';
 
 const LogExplorer = () => {
+  const { logs } = useDemo();
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -16,11 +17,11 @@ const LogExplorer = () => {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [selectedLog]);
 
-  const filteredLogs = mockLogs.filter(log => {
-    const matchesSearch = log.message.toLowerCase().includes(search.toLowerCase()) || 
-                          log.username.toLowerCase().includes(search.toLowerCase()) ||
-                          log.sourceIp.includes(search) ||
-                          log.host.toLowerCase().includes(search.toLowerCase());
+  const filteredLogs = logs.filter(log => {
+    const matchesSearch = (log.message || '').toLowerCase().includes(search.toLowerCase()) || 
+                          (log.username || '').toLowerCase().includes(search.toLowerCase()) ||
+                          (log.sourceIp || '').includes(search) ||
+                          (log.host || '').toLowerCase().includes(search.toLowerCase());
     const matchesType = typeFilter === 'All' || log.eventType === typeFilter;
     const matchesStatus = statusFilter === 'All' || log.status === statusFilter;
     

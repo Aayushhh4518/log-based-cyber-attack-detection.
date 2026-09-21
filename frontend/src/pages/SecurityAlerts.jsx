@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import AlertsTable from '../components/AlertsTable';
 import AlertDetails from '../components/AlertDetails';
-import { recentAlerts } from '../data/demoData';
+import { useDemo } from '../context/DemoContext';
 import { Search, Filter } from 'lucide-react';
 
 const SecurityAlerts = () => {
+  const { alerts } = useDemo();
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [search, setSearch] = useState('');
   const [severityFilter, setSeverityFilter] = useState('All');
@@ -18,7 +19,7 @@ const SecurityAlerts = () => {
     setStatusFilter('All');
   };
 
-  const filteredAlerts = recentAlerts.filter(alert => {
+  const filteredAlerts = alerts.filter(alert => {
     const matchesSearch = alert.user.toLowerCase().includes(search.toLowerCase()) || 
                           alert.sourceIp.includes(search) ||
                           alert.id.toLowerCase().includes(search.toLowerCase());
