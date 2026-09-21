@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, ShieldAlert, Activity, User, Globe, Clock, ChevronRight } from 'lucide-react';
+import { X, ShieldAlert, Activity, User, Globe, Clock } from 'lucide-react';
 
 const AlertDetails = ({ alert, onClose }) => {
   useEffect(() => {
@@ -106,9 +106,6 @@ const AlertDetails = ({ alert, onClose }) => {
         <div className="p-6 border-t border-slate-800 bg-slate-900 flex justify-end gap-3">
           <button onClick={onClose} className="px-4 py-2 rounded-md border border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors font-medium text-sm">
             Close
-          </button>
-          <button className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-500 transition-colors font-medium text-sm flex items-center gap-2">
-            Investigate <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 

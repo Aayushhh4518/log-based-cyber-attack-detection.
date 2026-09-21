@@ -2,10 +2,17 @@ import React from 'react';
 import StatCard from '../components/StatCard';
 import ThreatActivityChart from '../components/ThreatActivityChart';
 import DetectionBreakdown from '../components/DetectionBreakdown';
-import { summaryStats } from '../data/demoData';
+import { useDemo } from '../context/DemoContext';
 import { Activity, ShieldAlert, AlertTriangle, AlertOctagon, Download } from 'lucide-react';
 
 const Reports = () => {
+  const { summaryStats, demoState, alerts } = useDemo();
+
+  // Derive counts for the Executive Summary
+  const bruteForceCount = alerts.filter(a => a.detection === 'Potential Brute-Force Attack').length;
+  const privEscCount = alerts.filter(a => a.detection === 'Suspicious Privilege Escalation').length;
+  const anomalousCount = alerts.filter(a => a.detection === 'Anomalous Login Time').length;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center bg-slate-800 p-6 rounded-lg border border-slate-700">
@@ -55,21 +62,28 @@ const Reports = () => {
 
       <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
         <h3 className="text-lg font-semibold text-slate-100 mb-4">Executive Summary</h3>
-        <div className="space-y-4 text-slate-300 text-sm leading-relaxed">
-          <p>
-            During this reporting period, the system processed <strong className="text-slate-100">{summaryStats.totalEvents}</strong> raw log events. 
-            The detection engine successfully identified and flagged <strong className="text-slate-100">{summaryStats.securityAlerts}</strong> suspicious activities 
-            requiring analyst review.
-          </p>
-          <p>
-            The majority of alerts were related to <strong>Potential Brute-Force Attacks</strong>, accounting for 45% of total detections. 
-            There were <strong className="text-red-400">{summaryStats.criticalSeverity} Critical</strong> alerts and <strong className="text-amber-400">{summaryStats.highSeverity} High</strong> severity alerts generated, primarily focused on suspicious privilege escalation attempts outside of normal business hours.
-          </p>
-          <p>
-            Overall threat activity peaked around 16:00 local time, correlating with the highest volume of authentication failures. 
-            Analysts are advised to review the source IPs associated with the critical brute-force attempts and verify the authorization of recent privilege escalations.
-          </p>
-        </div>
+        {demoState === 'complete' ? (
+          <div className="space-y-4 text-slate-300 text-sm leading-relaxed">
+            <p>
+              During this analysis, the system processed <strong className="text-slate-100">{summaryStats.totalEvents}</strong> controlled demonstration log events. 
+              The detection engine identified and flagged <strong className="text-slate-100">{summaryStats.securityAlerts}</strong> suspicious activities 
+              requiring analyst review.
+            </p>
+            <p>
+              The analysis detected <strong className="text-red-400">{bruteForceCount} Potential Brute-Force Attack</strong> ({summaryStats.criticalSeverity} Critical severity), 
+              <strong className="text-amber-400"> {privEscCount} Suspicious Privilege Escalation</strong> ({summaryStats.highSeverity} High severity), 
+              and <strong className="text-blue-400"> {anomalousCount} Anomalous Login Time</strong> (Medium severity) finding{anomalousCount !== 1 ? 's' : ''}.
+            </p>
+            <p>
+              Analysts are advised to review the source IPs associated with the critical brute-force attempts and verify the authorization of recent privilege escalations. 
+              Out-of-hours login activity should be confirmed with the relevant user.
+            </p>
+          </div>
+        ) : (
+          <div className="text-slate-500 text-sm py-4 text-center">
+            Run a security analysis from the Dashboard to generate the executive summary.
+          </div>
+        )}
       </div>
     </div>
   );

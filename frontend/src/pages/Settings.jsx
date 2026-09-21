@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Save } from 'lucide-react';
+import { Save, CheckCircle } from 'lucide-react';
 
 const Settings = () => {
   const [monitoringEnabled, setMonitoringEnabled] = useState(true);
@@ -13,19 +13,27 @@ const Settings = () => {
     medium: false,
     low: false
   });
+  const [showSaved, setShowSaved] = useState(false);
 
   const handleSave = (e) => {
     e.preventDefault();
-    // Simulate save
-    alert("Settings saved successfully (Frontend simulation).");
+    setShowSaved(true);
+    setTimeout(() => setShowSaved(false), 3000);
   };
 
   return (
     <div className="max-w-3xl space-y-6">
       <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
         <h2 className="text-xl font-bold text-slate-100 mb-1">System Settings</h2>
-        <p className="text-slate-400 text-sm">Configure detection thresholds and system preferences.</p>
+        <p className="text-slate-400 text-sm">Configure detection thresholds and system preferences. <span className="text-xs text-amber-500 ml-1 border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 rounded">DEMO MODE</span></p>
       </div>
+
+      {showSaved && (
+        <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-lg text-sm font-medium">
+          <CheckCircle className="w-4 h-4" />
+          Configuration saved successfully.
+        </div>
+      )}
 
       <form onSubmit={handleSave} className="space-y-6">
         
