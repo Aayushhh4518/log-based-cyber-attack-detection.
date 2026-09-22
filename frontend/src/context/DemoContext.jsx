@@ -16,6 +16,21 @@ export const DemoProvider = ({ children }) => {
     criticalSeverity: "0"
   };
 
+  const initialSettings = {
+    monitoringEnabled: true,
+    bruteForceThreshold: 5,
+    bruteForceWindow: 5,
+    loginStart: '06:00',
+    loginEnd: '22:00',
+    alertPref: {
+      critical: true,
+      high: true,
+      medium: false,
+      low: false
+    }
+  };
+
+  const [settings, setSettings] = useState(initialSettings);
   const [summaryStats, setSummaryStats] = useState(initialStats);
   const [alerts, setAlerts] = useState([]);
   const [logs, setLogs] = useState([]);
@@ -67,9 +82,21 @@ export const DemoProvider = ({ children }) => {
         { id: "L-224", timestamp: "2026-09-21 10:45:05", host: "db-server", username: "dbadmin", sourceIp: "10.0.1.6", eventType: "System", status: "Success", message: "Vacuum analyze completed" }
       ];
 
-      // 2. Generate Synthetic Alerts
-      const generatedAlerts = [
-        {
+      // 2. Conditionally Generate Synthetic Alerts
+      const generatedAlerts = [];
+      const bfThreshold = parseInt(settings.bruteForceThreshold, 10);
+      
+      const isAnomalousTime = (timeStr) => {
+        const t = timeStr.substring(0, 5); // "02:37"
+        if (settings.loginStart <= settings.loginEnd) {
+          return t < settings.loginStart || t > settings.loginEnd;
+        }
+        // crosses midnight
+        return t < settings.loginStart && t > settings.loginEnd;
+      };
+
+      if (5 >= bfThreshold) {
+        generatedAlerts.push({
           id: "ALT-9100",
           severity: "Critical",
           detection: "Potential Brute-Force Attack",
@@ -80,26 +107,31 @@ export const DemoProvider = ({ children }) => {
           details: {
             attempts: 5,
             evidence: "5 failed authentication attempts from 192.168.1.24 within 5 minutes.",
-            whyFlagged: "The source IP exceeded the configured failed-login threshold.",
+            whyFlagged: `The source IP equaled or exceeded the configured failed-login threshold (${bfThreshold}).`,
             recommendedAction: "Investigate the source IP and review authentication activity."
           }
-        },
-        {
-          id: "ALT-9101",
-          severity: "High",
-          detection: "Suspicious Privilege Escalation",
-          user: "tstark",
-          sourceIp: "10.0.4.15",
-          timestamp: "2026-09-21 09:20:15",
-          status: "New",
-          details: {
-            attempts: 1,
-            evidence: "User 'tstark' executed '/bin/su -' outside of standard change windows.",
-            whyFlagged: "An unprivileged user escalated to root outside of standard change windows.",
-            recommendedAction: "Verify if this escalation was authorized. If not, revoke access and reset credentials."
-          }
-        },
-        {
+        });
+      }
+
+      // Always generated in demo
+      generatedAlerts.push({
+        id: "ALT-9101",
+        severity: "High",
+        detection: "Suspicious Privilege Escalation",
+        user: "tstark",
+        sourceIp: "10.0.4.15",
+        timestamp: "2026-09-21 09:20:15",
+        status: "New",
+        details: {
+          attempts: 1,
+          evidence: "User 'tstark' executed '/bin/su -' outside of standard change windows.",
+          whyFlagged: "An unprivileged user escalated to root outside of standard change windows.",
+          recommendedAction: "Verify if this escalation was authorized. If not, revoke access and reset credentials."
+        }
+      });
+
+      if (isAnomalousTime("02:37:05")) {
+        generatedAlerts.push({
           id: "ALT-9102",
           severity: "Medium",
           detection: "Anomalous Login Time",
@@ -110,19 +142,19 @@ export const DemoProvider = ({ children }) => {
           details: {
             attempts: 1,
             evidence: "Successful login at 02:37 AM local time.",
-            whyFlagged: "Login event occurred outside the configured normal login window (06:00–22:00).",
+            whyFlagged: `Login event occurred outside the configured normal login window (${settings.loginStart}–${settings.loginEnd}).`,
             recommendedAction: "Confirm with the user if this was a legitimate out-of-hours login."
           }
-        }
-      ];
+        });
+      }
 
       setLogs(generatedLogs);
       setAlerts(generatedAlerts);
       setSummaryStats({
-        totalEvents: "24",
-        securityAlerts: "3",
-        highSeverity: "1",
-        criticalSeverity: "1"
+        totalEvents: generatedLogs.length.toString(),
+        securityAlerts: generatedAlerts.length.toString(),
+        highSeverity: generatedAlerts.filter(a => a.severity === 'High').length.toString(),
+        criticalSeverity: generatedAlerts.filter(a => a.severity === 'Critical').length.toString()
       });
       
       setIsAnalyzing(false);
@@ -134,6 +166,7 @@ export const DemoProvider = ({ children }) => {
     setLogs([]);
     setAlerts([]);
     setSummaryStats(initialStats);
+    setSettings(initialSettings);
     setDemoState('initial');
   };
 
@@ -144,6 +177,8 @@ export const DemoProvider = ({ children }) => {
       summaryStats,
       alerts,
       logs,
+      settings,
+      setSettings,
       runDemoAnalysis,
       resetDemo
     }}>

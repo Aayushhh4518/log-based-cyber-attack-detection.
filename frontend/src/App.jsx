@@ -11,11 +11,17 @@ import { DemoProvider } from './context/DemoContext';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [navState, setNavState] = useState({});
+
+  const handlePageChange = (page, state = {}) => {
+    setCurrentPage(page);
+    setNavState(state);
+  };
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'dashboard': return <Dashboard setCurrentPage={setCurrentPage} />;
-      case 'security-alerts': return <SecurityAlerts />;
+      case 'dashboard': return <Dashboard setCurrentPage={handlePageChange} />;
+      case 'security-alerts': return <SecurityAlerts initialSeverity={navState?.severity || 'All'} />;
       case 'log-explorer': return <LogExplorer />;
       case 'detection-rules': return <DetectionRules />;
       case 'reports': return <Reports />;
@@ -27,7 +33,7 @@ function App() {
   return (
     <DemoProvider>
       <div className="flex h-screen bg-slate-950 overflow-hidden font-sans text-slate-200">
-        <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        <Sidebar currentPage={currentPage} setCurrentPage={handlePageChange} />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <Header />
           <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">

@@ -1,22 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Save, CheckCircle } from 'lucide-react';
+import { useDemo } from '../context/DemoContext';
 
 const Settings = () => {
-  const [monitoringEnabled, setMonitoringEnabled] = useState(true);
-  const [bruteForceThreshold, setBruteForceThreshold] = useState('5');
-  const [bruteForceWindow, setBruteForceWindow] = useState('5');
-  const [loginStart, setLoginStart] = useState('06:00');
-  const [loginEnd, setLoginEnd] = useState('22:00');
-  const [alertPref, setAlertPref] = useState({
-    critical: true,
-    high: true,
-    medium: false,
-    low: false
-  });
+  const { settings, setSettings } = useDemo();
+  
+  const [monitoringEnabled, setMonitoringEnabled] = useState(settings.monitoringEnabled);
+  const [bruteForceThreshold, setBruteForceThreshold] = useState(settings.bruteForceThreshold);
+  const [bruteForceWindow, setBruteForceWindow] = useState(settings.bruteForceWindow);
+  const [loginStart, setLoginStart] = useState(settings.loginStart);
+  const [loginEnd, setLoginEnd] = useState(settings.loginEnd);
+  const [alertPref, setAlertPref] = useState(settings.alertPref);
+  
   const [showSaved, setShowSaved] = useState(false);
+
+  // Sync local state if global settings change (e.g. from Reset Demo)
+  useEffect(() => {
+    setMonitoringEnabled(settings.monitoringEnabled);
+    setBruteForceThreshold(settings.bruteForceThreshold);
+    setBruteForceWindow(settings.bruteForceWindow);
+    setLoginStart(settings.loginStart);
+    setLoginEnd(settings.loginEnd);
+    setAlertPref(settings.alertPref);
+  }, [settings]);
 
   const handleSave = (e) => {
     e.preventDefault();
+    setSettings({
+      monitoringEnabled,
+      bruteForceThreshold,
+      bruteForceWindow,
+      loginStart,
+      loginEnd,
+      alertPref
+    });
     setShowSaved(true);
     setTimeout(() => setShowSaved(false), 3000);
   };
@@ -29,7 +46,7 @@ const Settings = () => {
       </div>
 
       {showSaved && (
-        <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-lg text-sm font-medium">
+        <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-lg text-sm font-medium transition-all">
           <CheckCircle className="w-4 h-4" />
           Configuration saved successfully.
         </div>
@@ -42,8 +59,8 @@ const Settings = () => {
           <h3 className="text-lg font-semibold text-slate-100 mb-4 border-b border-slate-700 pb-2">Monitoring</h3>
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-medium text-slate-200">Active Log Monitoring</div>
-              <div className="text-sm text-slate-400">Continuously ingest and analyze logs</div>
+              <div className="font-medium text-slate-200">Demo Analysis Enabled</div>
+              <div className="text-sm text-slate-400">Generate synthetic logs and alerts for demonstration</div>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" className="sr-only peer" checked={monitoringEnabled} onChange={() => setMonitoringEnabled(!monitoringEnabled)} />
