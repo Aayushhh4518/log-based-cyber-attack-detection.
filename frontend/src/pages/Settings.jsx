@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Save, CheckCircle } from 'lucide-react';
-import { useDemo } from '../context/DemoContext';
+import { useApi } from '../context/ApiContext';
 
 const Settings = () => {
-  const { settings, setSettings } = useDemo();
+  const { settings, setSettings } = useApi();
   
   const [monitoringEnabled, setMonitoringEnabled] = useState(settings.monitoringEnabled);
   const [bruteForceThreshold, setBruteForceThreshold] = useState(settings.bruteForceThreshold);

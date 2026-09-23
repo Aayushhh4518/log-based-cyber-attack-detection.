@@ -7,7 +7,7 @@ import LogExplorer from './pages/LogExplorer';
 import DetectionRules from './pages/DetectionRules';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
-import { DemoProvider } from './context/DemoContext';
+import { ApiProvider } from './context/ApiContext';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -26,12 +26,12 @@ function App() {
       case 'detection-rules': return <DetectionRules />;
       case 'reports': return <Reports />;
       case 'settings': return <Settings />;
-      default: return <Dashboard />;
+      default: return <Dashboard setCurrentPage={handlePageChange} />;
     }
   };
 
   return (
-    <DemoProvider>
+    <ApiProvider>
       <div className="flex h-screen bg-slate-950 overflow-hidden font-sans text-slate-200">
         <Sidebar currentPage={currentPage} setCurrentPage={handlePageChange} />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -43,7 +43,7 @@ function App() {
           </main>
         </div>
       </div>
-    </DemoProvider>
+    </ApiProvider>
   );
 }
 

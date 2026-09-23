@@ -1,0 +1,19 @@
+- `[x]` 1. **Complete Database Backend:**
+  - Implement missing alert database functions (`insert_alerts`, `get_alerts`, `get_alert_by_id`, `get_dashboard_stats`).
+  - Fix SQLite column case sensitivity bugs (`COLLATE NOCASE`).
+- `[x]` 2. **Complete Log Parsing & Normalization:**
+  - Create the 20-event synthetic log dataset.
+  - Test log parser logic to ensure mapping is correct.
+- `[x]` 3. **Implement Detection Engine:**
+  - Create the `engine.py` script.
+  - Implement rule logic for Brute-Force, Privilege Escalation, and Anomalous Login.
+- `[x]` 4. **Implement REST APIs:**
+  - Add `/api/analyze`, `/api/alerts`, `/api/stats`, and `/api/alerts/{id}` to `main.py`.
+- `[x]` 5. **Frontend Integration:**
+  - Replace `DemoContext.jsx` with real `ApiContext.jsx`.
+  - Rewrite `SecurityAnalysis.jsx` for the interactive Demo Center.
+  - Update `Dashboard`, `SecurityAlerts`, `LogExplorer`, `DetectionRules`, and `Reports` to consume real APIs.
+- `[x]` 6. **Testing & Demonstration Check:**
+  - Start both backend and frontend servers.
+  - Perform an end-to-end test.
+- `[x]` 7. **Final Verification & Walkthrough Creation**
